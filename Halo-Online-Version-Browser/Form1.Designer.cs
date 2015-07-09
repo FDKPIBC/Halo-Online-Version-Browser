@@ -28,12 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.gbVersion = new System.Windows.Forms.GroupBox();
             this.lbVersion = new System.Windows.Forms.ListBox();
             this.gbContent = new System.Windows.Forms.GroupBox();
+            this.DownLoadStatespb = new System.Windows.Forms.ProgressBar();
             this.CommitTimeTilelab = new System.Windows.Forms.Label();
             this.commitIdlb = new System.Windows.Forms.LinkLabel();
-            this.Durllb = new System.Windows.Forms.Label();
             this.Devlab = new System.Windows.Forms.Label();
             this.Welcomelab = new System.Windows.Forms.Label();
             this.FileSizelb = new System.Windows.Forms.Label();
@@ -74,9 +75,9 @@
             // 
             // gbContent
             // 
+            this.gbContent.Controls.Add(this.DownLoadStatespb);
             this.gbContent.Controls.Add(this.CommitTimeTilelab);
             this.gbContent.Controls.Add(this.commitIdlb);
-            this.gbContent.Controls.Add(this.Durllb);
             this.gbContent.Controls.Add(this.Devlab);
             this.gbContent.Controls.Add(this.Welcomelab);
             this.gbContent.Controls.Add(this.FileSizelb);
@@ -98,6 +99,13 @@
             this.gbContent.TabStop = false;
             this.gbContent.Text = "版本信息";
             // 
+            // DownLoadStatespb
+            // 
+            this.DownLoadStatespb.Location = new System.Drawing.Point(9, 229);
+            this.DownLoadStatespb.Name = "DownLoadStatespb";
+            this.DownLoadStatespb.Size = new System.Drawing.Size(351, 23);
+            this.DownLoadStatespb.TabIndex = 17;
+            // 
             // CommitTimeTilelab
             // 
             this.CommitTimeTilelab.AutoSize = true;
@@ -118,16 +126,6 @@
             this.commitIdlb.TabStop = true;
             this.commitIdlb.Text = "linkLabel1";
             this.commitIdlb.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.commitIdlb_LinkClicked);
-            // 
-            // Durllb
-            // 
-            this.Durllb.AutoSize = true;
-            this.Durllb.Location = new System.Drawing.Point(384, 232);
-            this.Durllb.Name = "Durllb";
-            this.Durllb.Size = new System.Drawing.Size(43, 17);
-            this.Durllb.TabIndex = 14;
-            this.Durllb.Text = "label1";
-            this.Durllb.Visible = false;
             // 
             // Devlab
             // 
@@ -260,6 +258,7 @@
             this.Controls.Add(this.gbContent);
             this.Controls.Add(this.gbVersion);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "Halo Online版本浏览器";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -288,9 +287,9 @@
         private System.Windows.Forms.Label commitTimelb;
         private System.Windows.Forms.Label Welcomelab;
         private System.Windows.Forms.Label Devlab;
-        private System.Windows.Forms.Label Durllb;
         private System.Windows.Forms.LinkLabel commitIdlb;
         private System.Windows.Forms.Label CommitTimeTilelab;
+        private System.Windows.Forms.ProgressBar DownLoadStatespb;
     }
 }
 

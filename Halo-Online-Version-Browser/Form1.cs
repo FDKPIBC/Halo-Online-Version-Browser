@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
+using System.IO;
 using Newtonsoft.Json.Linq;
 
 namespace HaloOnlineVersionBrowser
@@ -18,6 +19,8 @@ namespace HaloOnlineVersionBrowser
     {
         List<Build> _list = new List<Build>();
         List<string> _VersionList = new List<string>();
+        string _downloaddir = AppDomain.CurrentDomain.BaseDirectory + "DownLoads\\";
+        string _downloadurl = string.Empty;
         public Form1()
         {
             InitializeComponent();
@@ -38,8 +41,10 @@ namespace HaloOnlineVersionBrowser
                     this.commitIdlb.Visible =
                     this.commitMessagelb.Visible =
                     this.commitTitlelb.Visible =
+                    this.DownLoadStatespb.Visible =
                     this.CommitTimeTilelab.Visible =
                     this.commitTimelb.Visible = false;
+
         }
 
         private void lbVersion_Click(object sender, EventArgs e)
@@ -48,6 +53,8 @@ namespace HaloOnlineVersionBrowser
             var index = this.lbVersion.SelectedIndex;
             if (index > -1)
             {
+                this.DownLoadbtn.Text = "下载";
+                this.DownLoadbtn.Visible =
                 this.Versionlb.Visible =
                 this.VersionTitlelb.Visible =
                 this.Authorlb.Visible =
@@ -58,16 +65,29 @@ namespace HaloOnlineVersionBrowser
                 this.commitMessagelb.Visible =
                 this.commitTitlelb.Visible =
                 this.CommitTimeTilelab.Visible =
+                this.DownLoadStatespb.Visible =
                 this.commitTimelb.Visible = true;
                 this.Versionlb.Text = _list[index].BuildVersion;
                 this.Authorlb.Text = _list[index].CommitAuthor;
-                this.FileSizelb.Text = _list[index].size;
+                this.FileSizelb.Text = (Convert.ToInt32(_list[index].size) / 1000000).ToString("0MB");
                 this.commitIdlb.Text = _list[index].CommitId;
                 this.commitMessagelb.Text = _list[index].CommitMessage;
-                this.Durllb.Text = _list[index].downloadUrl;
+                _downloadurl = _list[index].downloadUrl;
                 this.branchlb.Text = _list[index].Branch;
                 this.commitTimelb.Text = _list[index].CommitDate.ToString();
-                this.commitIdlb.Links[0].LinkData = "https://github.com/ElDewrito/ElDorito/commit/"+_list[index].CommitId;
+                this.commitIdlb.Links[0].LinkData = "https://github.com/ElDewrito/ElDorito/commit/" + _list[index].CommitId;
+            }
+        }
+        bool FindDir()
+        {
+            if (Directory.Exists(_downloaddir))
+            {
+                return true;
+            }
+            else
+            {
+                Directory.CreateDirectory(_downloaddir);
+                return FindDir();
             }
         }
         void AnalysisJson()
@@ -104,26 +124,43 @@ namespace HaloOnlineVersionBrowser
                 if (_list.Count > 0)
                 {
                     this.gbContent.Text = "版本信息";
+                    this.DownLoadbtn.Visible =
                     this.Devlab.Visible = false;
-                    
+
                     lbVersion.DataSource = new List<string>(_list.Select((t) => { return t.BuildVersion; }));
                     this.lbVersion.Enabled = true;
                 }
             }
             else if (DownLoadbtn.Text == "下载")
             {
-                if (string.IsNullOrEmpty(this.Durllb.Text))
+                if (!string.IsNullOrEmpty(_downloadurl)&&FindDir())
                 {
-                    Process.Start(this.Durllb.Text);
+                    this.DownLoadbtn.Enabled = false;
+                    this.lbVersion.Enabled = false;
+                    WebClient downloader = new WebClient();
+                    downloader.DownloadFileCompleted += DownLoadCompleted;
+                    downloader.DownloadProgressChanged += DownLoadProgressChanged;
+                    downloader.DownloadFileAsync(new System.Uri(_downloadurl), _downloaddir + _downloadurl.Substring(_downloadurl.LastIndexOf("/") + 1));
                 }
                 else
                 {
-                    MessageBox.Show("请先选择版本");
+                    MessageBox.Show("请先选择版本", "Halo Online Version Browser");
                 }
 
             }
         }
-
+        private void DownLoadCompleted(object sender, AsyncCompletedEventArgs e)
+        {
+            MessageBox.Show("下载完毕!", "Halo Online Version Browser");
+            this.lbVersion.Enabled =
+            this.DownLoadbtn.Enabled = true;
+            DownLoadStatespb.Value = 0;
+            Process.Start(_downloaddir);
+        }
+        void DownLoadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        {
+            DownLoadStatespb.Value = e.ProgressPercentage;
+        }
         private void commitIdlb_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start(e.Link.LinkData.ToString());

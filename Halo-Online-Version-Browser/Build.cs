@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HaloOnlineVersionBrowser
 {
-    public class Build 
+    public class Build
     {
         /// <summary>
         /// Build信息ID
